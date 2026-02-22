@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f8f5ee">
+<title>Vocab Lab</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+TC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f5ee; --bg2: #f0ede6; --bg3: #f5f2eb; --card: #fff;
+    --ink: #1a1a2e; --ink2: #555; --ink3: #888; --ink4: #aaa; --ink5: #ccc;
+    --border: #e8e4db; --accent: #ffd166;
+    --red: #e74c3c; --orange: #ff9800; --green: #4caf50;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'Noto Sans TC', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --radius: 14px; --radius-sm: 8px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: var(--sans); background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    min-height: 100vh; min-height: 100dvh; color: var(--ink); overscroll-behavior: none;
+  }
+  button { font-family: var(--sans); cursor: pointer; border: none; outline: none; }
+  input, textarea { font-family: var(--sans); outline: none; }
+
+  /* ── Layout ── */
+  .app { max-width: 480px; margin: 0 auto; padding-bottom: 90px; }
+  .header { padding: 20px 16px 8px; display: flex; align-items: center; gap: 10px; }
+  .header h1 { font-family: var(--serif); font-size: 22px; letter-spacing: -0.5px; }
+  .header .sub { font-size: 11px; color: var(--ink3); }
+  .content { padding: 12px 16px; }
+
+  /* ── Setup Banner ── */
+  .setup-banner {
+    background: var(--accent); border-radius: var(--radius); padding: 16px;
+    margin: 12px 16px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .setup-banner h3 { font-family: var(--serif); font-size: 16px; }
+  .setup-banner input {
+    width: 100%; padding: 10px 12px; border-radius: var(--radius-sm); border: 2px solid rgba(0,0,0,.1);
+    font-size: 13px; font-family: var(--mono); background: rgba(255,255,255,.8);
+  }
+  .setup-banner button {
+    padding: 10px; border-radius: var(--radius-sm); background: var(--ink); color: var(--bg);
+    font-size: 14px; font-weight: 600;
+  }
+
+  /* ── Bottom Nav ── */
+  .nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding: 8px 0 max(env(safe-area-inset-bottom), 8px);
+  }
+  .nav-inner { display: flex; justify-content: space-around; max-width: 480px; margin: 0 auto; }
+  .nav-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    background: none; padding: 6px 14px; font-size: 10px; color: var(--ink5); transition: color .2s;
+  }
+  .nav-btn.active { color: var(--ink); }
+  .nav-btn svg { width: 20px; height: 20px; }
+
+  /* ── Flashcard ── */
+  .card-container { perspective: 1000px; margin-bottom: 16px; }
+  .card {
+    border-radius: 20px; padding: 40px 24px; min-height: 340px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    cursor: pointer; user-select: none; transition: all .35s cubic-bezier(.4,0,.2,1);
+    position: relative;
+  }
+  .card.front { background: var(--card); border: 2px solid var(--border); box-shadow: 0 2px 12px rgba(0,0,0,.04); }
+  .card.back { background: var(--ink); color: var(--bg2); box-shadow: 0 8px 30px rgba(26,26,46,.2); text-align: left; align-items: stretch; }
+  .card .word-big { font-family: var(--serif); font-size: 36px; letter-spacing: -0.5px; }
+  .card .phonetic { font-size: 14px; color: var(--ink4); margin-top: 4px; }
+  .card .hint { position: absolute; bottom: 20px; font-size: 12px; color: var(--ink5); }
+  .card.back .zhTW { font-size: 20px; color: var(--accent); margin: 12px 0 16px; }
+  .card.back .def { font-size: 14px; line-height: 1.7; opacity: .85; margin-bottom: 14px; }
+  .card.back .synonyms { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .card.back .syn-tag {
+    font-size: 12px; background: rgba(255,255,255,.1); padding: 3px 10px;
+    border-radius: 20px; color: #ddd;
+  }
+  .card.back .example {
+    font-size: 13px; font-style: italic; opacity: .7; margin-bottom: 14px;
+    border-left: 3px solid rgba(255,209,102,.4); padding-left: 12px; line-height: 1.6;
+  }
+  .card.back .forms { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; opacity: .6; }
+  .card.back .forms .pos { color: var(--accent); }
+
+  .rate-btns { display: flex; gap: 10px; margin-top: 16px; }
+  .rate-btn {
+    flex: 1; padding: 14px 0; border-radius: var(--radius); color: #fff; font-size: 14px; font-weight: 600;
+  }
+  .rate-btn.r { background: var(--red); box-shadow: 0 4px 14px rgba(231,76,60,.25); }
+  .rate-btn.o { background: var(--orange); box-shadow: 0 4px 14px rgba(255,152,0,.25); }
+  .rate-btn.g { background: var(--green); box-shadow: 0 4px 14px rgba(76,175,80,.25); }
+
+  .dots { display: flex; justify-content: center; gap: 4px; margin-top: 16px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #ddd; transition: all .2s; }
+  .dot.active { width: 18px; border-radius: 3px; background: var(--ink); }
+
+  /* ── Quiz ── */
+  .quiz-start { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; }
+  .quiz-start h2 { font-family: var(--serif); font-size: 24px; margin-bottom: 8px; }
+  .quiz-start .sub { color: var(--ink3); font-size: 14px; margin-bottom: 28px; }
+  .quiz-type-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; }
+  .quiz-type-btn {
+    padding: 16px; border-radius: var(--radius); font-size: 15px; font-weight: 500;
+  }
+  .quiz-type-btn.primary { background: var(--ink); color: var(--bg); }
+  .quiz-type-btn.secondary { background: var(--card); color: var(--ink); border: 2px solid var(--ink); }
+
+  .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 30px; }
+  .progress-fill { height: 4px; background: var(--ink); border-radius: 2px; transition: width .3s; }
+
+  .quiz-question { text-align: center; margin-bottom: 30px; }
+  .quiz-question .label { font-size: 13px; color: var(--ink3); margin-bottom: 8px; }
+  .quiz-question .prompt { font-family: var(--serif); font-size: 32px; }
+
+  .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-opt {
+    padding: 16px 20px; border-radius: var(--radius); border: 2px solid var(--border);
+    background: var(--card); font-size: 15px; text-align: left; transition: all .2s;
+  }
+  .quiz-opt.correct { background: var(--green); border-color: var(--green); color: #fff; }
+  .quiz-opt.wrong { background: var(--red); border-color: var(--red); color: #fff; }
+  .quiz-opt.en { font-family: var(--serif); }
+
+  .quiz-result { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; }
+  .quiz-result .emoji { font-size: 64px; margin-bottom: 12px; }
+  .quiz-result .score { font-family: var(--serif); font-size: 32px; margin-bottom: 4px; }
+
+  /* ── Word List ── */
+  .search-input {
+    width: 100%; padding: 12px; border-radius: var(--radius); border: 2px solid var(--border);
+    font-size: 14px; margin-bottom: 16px; background: rgba(250,248,244,.8);
+  }
+  .word-item {
+    background: var(--card); border-radius: var(--radius); padding: 14px 16px;
+    border: 1px solid var(--border); margin-bottom: 8px;
+  }
+  .word-item .top { display: flex; justify-content: space-between; align-items: center; }
+  .word-item .name { font-family: var(--serif); font-size: 17px; }
+  .word-item .ph { font-size: 12px; color: var(--ink3); margin-left: 8px; }
+  .word-item .zh { font-size: 13px; color: var(--ink2); margin-top: 4px; }
+  .word-item .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .word-item .tag {
+    font-size: 11px; background: var(--bg3); color: var(--ink3); padding: 2px 8px;
+    border-radius: 20px; font-family: var(--mono);
+  }
+  .fam-dots { display: flex; gap: 2px; }
+  .fam-dot { width: 6px; height: 6px; border-radius: 50%; background: #ddd; }
+  .del-btn { background: none; font-size: 16px; color: var(--ink5); padding: 0 4px; }
+
+  /* ── Add ── */
+  .add-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .add-header h2 { font-family: var(--serif); font-size: 20px; }
+  .close-btn { background: none; font-size: 24px; color: var(--ink2); }
+  .mode-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .mode-tab {
+    flex: 1; padding: 8px; border-radius: var(--radius-sm); font-size: 13px; transition: all .2s;
+  }
+  .mode-tab.active { background: var(--ink); color: var(--bg); }
+  .mode-tab.inactive { background: var(--bg2); color: var(--ink); }
+  .json-hint { font-size: 12px; color: var(--ink3); margin-bottom: 12px; line-height: 1.6; }
+  .json-hint code { background: var(--bg3); padding: 2px 6px; border-radius: 4px; }
+  .json-area {
+    width: 100%; min-height: 200px; padding: 14px; border-radius: var(--radius);
+    border: 2px solid var(--border); font-family: var(--mono); font-size: 12px;
+    resize: vertical; background: rgba(250,248,244,.8);
+  }
+  .submit-btn {
+    width: 100%; padding: 14px; border-radius: var(--radius); background: var(--ink);
+    color: var(--bg); font-size: 15px; margin-top: 12px;
+  }
+  .field label { display: block; font-size: 12px; color: var(--ink3); margin-bottom: 4px; }
+  .field input {
+    width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 2px solid var(--border);
+    font-size: 14px; background: rgba(250,248,244,.8);
+  }
+  .field { margin-bottom: 10px; }
+  .tip-box {
+    margin-top: 24px; padding: 16px; background: var(--bg3); border-radius: var(--radius);
+    font-size: 13px; color: var(--ink2); line-height: 1.7;
+  }
+
+  /* ── Sync indicator ── */
+  .sync { font-size: 11px; color: var(--ink4); padding: 4px 0; text-align: center; }
+  .sync.error { color: var(--red); }
+  .sync.ok { color: var(--green); }
+
+  /* ── Loading / Empty ── */
+  .empty { text-align: center; color: var(--ink3); padding: 60px 20px; }
+  .empty .icon { font-size: 40px; margin-bottom: 8px; }
+  .loading { display: flex; align-items: center; justify-content: center; height: 80vh; color: var(--ink3); }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--bg); padding: 10px 20px; border-radius: 30px;
+    font-size: 13px; z-index: 200; opacity: 0; transition: opacity .3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<div class="app" id="app">
+  <div class="loading">載入中...</div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner" id="nav"></div>
+</nav>
+
+<script>
+// ============================================================
+// Vocab Lab — Frontend
+// ============================================================
+
+// ── Config ───────────────────────────────────────────────────
+const STORAGE_API_URL_KEY = "vocablab_api_url";
+let API_URL = localStorage.getItem(STORAGE_API_URL_KEY) || "";
+let words = [];
+let currentTab = "cards";
+
+// ── Toast ────────────────────────────────────────────────────
+function toast(msg, duration = 2000) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), duration);
+}
+
+// ── API ──────────────────────────────────────────────────────
+async function apiGet() {
+  if (!API_URL) return null;
+  try {
+    const r = await fetch(API_URL);
+    const d = await r.json();
+    return d.success ? d.words : null;
+  } catch (e) { console.error("GET fail:", e); return null; }
+}
+
+async function apiPost(body) {
+  if (!API_URL) return null;
+  try {
+    const r = await fetch(API_URL, {
+      method: "POST", headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(body),
+    });
+    return await r.json();
+  } catch (e) { console.error("POST fail:", e); return null; }
+}
+
+// ── Helpers ──────────────────────────────────────────────────
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function famColor(f) {
+  return f >= 4 ? "var(--green)" : f >= 2 ? "var(--orange)" : "var(--red)";
+}
+
+// ── Render Engine ────────────────────────────────────────────
+function render() {
+  renderNav();
+  const app = document.getElementById("app");
+
+  if (!API_URL) { app.innerHTML = renderSetup(); bindSetup(); return; }
+
+  let html = renderHeader();
+  if (currentTab === "cards") html += renderCards();
+  else if (currentTab === "quiz") html += renderQuiz();
+  else if (currentTab === "list") html += renderList();
+  else if (currentTab === "add") html += renderAdd();
+  app.innerHTML = html;
+
+  if (currentTab === "cards") bindCards();
+  else if (currentTab === "quiz") bindQuiz();
+  else if (currentTab === "list") bindList();
+  else if (currentTab === "add") bindAdd();
+}
+
+// ── Nav ──────────────────────────────────────────────────────
+function renderNav() {
+  const tabs = [
+    { key: "cards", label: "卡片", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg>` },
+    { key: "quiz", label: "測驗", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 115 2c0 1.5-2 2-2 3m0 3h.01"/></svg>` },
+    { key: "list", label: "單字庫", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>` },
+    { key: "add", label: "新增", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>` },
+  ];
+  document.getElementById("nav").innerHTML = tabs.map(t =>
+    `<button class="nav-btn ${currentTab === t.key ? 'active' : ''}" data-tab="${t.key}">${t.icon}<span>${t.label}</span></button>`
+  ).join("");
+  document.querySelectorAll(".nav-btn").forEach(b => {
+    b.onclick = () => { currentTab = b.dataset.tab; render(); };
+  });
+}
+
+// ── Setup ────────────────────────────────────────────────────
+function renderSetup() {
+  return `
+    <div style="padding:60px 24px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">📖</div>
+      <h1 style="font-family:var(--serif);font-size:28px;margin-bottom:4px;">Vocab Lab</h1>
+      <p style="color:var(--ink3);margin-bottom:32px;">連結你的 Google Sheet 開始使用</p>
+      <div class="setup-banner">
+        <h3>🔗 貼上 Apps Script URL</h3>
+        <input id="api-input" type="url" placeholder="https://script.google.com/macros/s/xxxxx/exec">
+        <button id="api-save">連線</button>
+      </div>
+      <div class="tip-box" style="margin:24px 0;text-align:left;">
+        <strong>💡 還沒設定？步驟如下：</strong><br><br>
+        1️⃣ 建立 Google Sheet<br>
+        2️⃣ Extensions → Apps Script<br>
+        3️⃣ 貼上 google-apps-script.js 的 code<br>
+        4️⃣ Deploy → New deployment → Web app<br>
+        5️⃣ 複製 URL 貼到上面
+      </div>
+    </div>`;
+}
+function bindSetup() {
+  const btn = document.getElementById("api-save");
+  if (!btn) return;
+  btn.onclick = async () => {
+    const url = document.getElementById("api-input").value.trim();
+    if (!url.startsWith("https://script.google.com")) {
+      toast("❌ 請貼上有效的 Apps Script URL"); return;
+    }
+    API_URL = url;
+    localStorage.setItem(STORAGE_API_URL_KEY, url);
+    toast("⏳ 連線中...");
+    const data = await apiGet();
+    if (data !== null) {
+      words = data;
+      toast("✅ 連線成功！");
+      render();
+    } else {
+      toast("❌ 連線失敗，請確認 URL 和權限");
+      API_URL = "";
+      localStorage.removeItem(STORAGE_API_URL_KEY);
+    }
+  };
+}
+
+// ── Header ───────────────────────────────────────────────────
+function renderHeader() {
+  const mastered = words.filter(w => (w.familiarity || 0) >= 4).length;
+  return `
+    <div class="header">
+      <span style="font-size:28px;">📖</span>
+      <div>
+        <h1>Vocab Lab</h1>
+        <div class="sub">${words.length} 個單字 · ${mastered} 已熟悉</div>
+      </div>
+    </div>`;
+}
+
+// ── Flashcard ────────────────────────────────────────────────
+let deck = [], cardIdx = 0, flipped = false;
+
+function initDeck() {
+  const prioritized = [...words].sort((a, b) => (a.familiarity || 0) - (b.familiarity || 0));
+  deck = shuffle(prioritized.slice(0, Math.min(20, prioritized.length)));
+  cardIdx = 0; flipped = false;
+}
+
+function renderCards() {
+  if (words.length === 0) return `<div class="empty"><div class="icon">📚</div><div>還沒有單字，去「新增」加幾個吧！</div></div>`;
+  if (deck.length === 0) initDeck();
+  const c = deck[cardIdx];
+  if (!c) { initDeck(); return renderCards(); }
+
+  if (!flipped) {
+    return `<div class="content">
+      <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
+        <h2 style="font-family:var(--serif);font-size:20px;">複習卡片</h2>
+        <span style="font-size:13px;color:var(--ink3);">${cardIdx + 1} / ${deck.length}</span>
+      </div>
+      <div class="card front" id="flashcard">
+        <div class="word-big">${c.word}</div>
+        <div class="phonetic">${c.phonetic || ''}</div>
+        <div class="hint">點擊翻面 →</div>
+      </div>
+      ${renderDots()}
+    </div>`;
+  }
+
+  const syns = (c.synonyms || []).map(s => `<span class="syn-tag">≈ ${s}</span>`).join("");
+  const forms = Object.entries(c.forms || {}).map(([k,v]) => `<span><span class="pos">${k}:</span> ${v}</span>`).join("");
+
+  return `<div class="content">
+    <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
+      <h2 style="font-family:var(--serif);font-size:20px;color:var(--ink);">複習卡片</h2>
+      <span style="font-size:13px;color:var(--ink3);">${cardIdx + 1} / ${deck.length}</span>
+    </div>
+    <div class="card back" id="flashcard">
+      <div style="font-family:var(--serif);font-size:24px;">${c.word}</div>
+      <div style="font-size:13px;opacity:.6;margin-top:4px;">${c.phonetic || ''}</div>
+      <div class="zhTW">${c.zhTW}</div>
+      <div class="def">${c.definition}</div>
+      ${syns ? `<div class="synonyms">${syns}</div>` : ''}
+      ${c.example ? `<div class="example">"${c.example}"</div>` : ''}
+      ${forms ? `<div class="forms">${forms}</div>` : ''}
+    </div>
+    <div class="rate-btns">
+      <button class="rate-btn r" data-delta="-1">不熟 😵</button>
+      <button class="rate-btn o" data-delta="0">普通 🤔</button>
+      <button class="rate-btn g" data-delta="1">記得 ✅</button>
+    </div>
+    ${renderDots()}
+  </div>`;
+}
+
+function renderDots() {
+  return `<div class="dots">${deck.map((_, i) =>
+    `<div class="dot ${i === cardIdx ? 'active' : ''}"></div>`
+  ).join("")}</div>`;
+}
+
+function bindCards() {
+  const fc = document.getElementById("flashcard");
+  if (fc) fc.onclick = () => { flipped = !flipped; render(); };
+
+  document.querySelectorAll(".rate-btn").forEach(b => {
+    b.onclick = async (e) => {
+      e.stopPropagation();
+      const delta = parseInt(b.dataset.delta);
+      const c = deck[cardIdx];
+      const newFam = Math.max(0, Math.min(5, (c.familiarity || 0) + delta));
+      c.familiarity = newFam;
+      c.lastReviewed = new Date().toISOString();
+      // Update local
+      const wi = words.findIndex(w => w.word === c.word);
+      if (wi >= 0) { words[wi].familiarity = newFam; words[wi].lastReviewed = c.lastReviewed; }
+      // Update remote (fire and forget)
+      apiPost({ action: "update_familiarity", wordName: c.word, familiarity: newFam });
+      flipped = false;
+      cardIdx = (cardIdx + 1) % deck.length;
+      render();
+    };
+  });
+
+  // Swipe support
+  let touchX = null;
+  if (fc) {
+    fc.addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, { passive: true });
+    fc.addEventListener("touchend", e => {
+      if (touchX === null) return;
+      const diff = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(diff) > 60 && !flipped) {
+        cardIdx = (cardIdx + (diff > 0 ? -1 : 1) + deck.length) % deck.length;
+        render();
+      }
+      touchX = null;
+    }, { passive: true });
+  }
+}
+
+// ── Quiz ─────────────────────────────────────────────────────
+let quizType = null, questions = [], qIdx = 0, qSelected = null, qScore = 0, qFinished = false;
+
+function renderQuiz() {
+  if (!quizType) {
+    const enough = words.length >= 4;
+    return `<div class="content"><div class="quiz-start">
+      <h2>測驗模式</h2>
+      <div class="sub">${enough ? `共 ${words.length} 個單字，隨機出 ${Math.min(10, words.length)} 題` : '至少需要 4 個單字才能開始測驗'}</div>
+      ${enough ? `<div class="quiz-type-btns">
+        <button class="quiz-type-btn primary" data-type="en2zh">🇬🇧 → 🇹🇼 英翻中</button>
+        <button class="quiz-type-btn secondary" data-type="zh2en">🇹🇼 → 🇬🇧 中翻英</button>
+      </div>` : ''}
+    </div></div>`;
+  }
+
+  if (qFinished) {
+    const pct = Math.round((qScore / questions.length) * 100);
+    const emoji = pct >= 80 ? "🎉" : pct >= 50 ? "💪" : "📖";
+    const msg = pct >= 80 ? "太厲害了！" : pct >= 50 ? "還不錯，繼續加油！" : "多複習幾次會更好的！";
+    return `<div class="content"><div class="quiz-result">
+      <div class="emoji">${emoji}</div>
+      <div class="score">${qScore} / ${questions.length}</div>
+      <div class="sub">${msg}</div>
+      <button class="quiz-type-btn primary" id="quiz-restart" style="margin-top:20px;padding:14px 40px;">再來一次</button>
+    </div></div>`;
+  }
+
+  const q = questions[qIdx];
+  const prompt = q.type === "en2zh" ? q.word.word : q.word.zhTW;
+  const label = q.type === "en2zh" ? "這個字的中文是？" : "這個中文對應的英文是？";
+
+  let optsHtml = q.options.map((o, i) => {
+    let cls = q.type === "zh2en" ? "quiz-opt en" : "quiz-opt";
+    if (qSelected !== null) {
+      if (o.correct) cls += " correct";
+      else if (i === qSelected && !o.correct) cls += " wrong";
+    }
+    return `<button class="${cls}" data-oi="${i}">${o.text}</button>`;
+  }).join("");
+
+  return `<div class="content">
+    <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
+      <button id="quiz-back" style="background:none;font-size:14px;color:var(--ink3);">← 返回</button>
+      <span style="font-size:13px;color:var(--ink3);">${qIdx + 1} / ${questions.length}</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${(qIdx / questions.length) * 100}%"></div></div>
+    <div class="quiz-question">
+      <div class="label">${label}</div>
+      <div class="prompt">${prompt}</div>
+      ${q.type === "en2zh" ? `<div style="font-size:13px;color:var(--ink4);margin-top:4px;">${q.word.phonetic || ''}</div>` : ''}
+    </div>
+    <div class="quiz-opts">${optsHtml}</div>
+  </div>`;
+}
+
+function generateQuiz(type) {
+  const shuffled = shuffle([...words]);
+  questions = shuffled.slice(0, Math.min(10, shuffled.length)).map(w => {
+    const others = shuffle(words.filter(x => x.word !== w.word)).slice(0, 3);
+    const options = shuffle(
+      type === "en2zh"
+        ? [{ text: w.zhTW, correct: true }, ...others.map(o => ({ text: o.zhTW, correct: false }))]
+        : [{ text: w.word, correct: true }, ...others.map(o => ({ text: o.word, correct: false }))]
+    );
+    return { word: w, options, type };
+  });
+  qIdx = 0; qSelected = null; qScore = 0; qFinished = false; quizType = type;
+}
+
+function bindQuiz() {
+  document.querySelectorAll(".quiz-type-btn[data-type]").forEach(b => {
+    b.onclick = () => { generateQuiz(b.dataset.type); render(); };
+  });
+  const back = document.getElementById("quiz-back");
+  if (back) back.onclick = () => { quizType = null; render(); };
+  const restart = document.getElementById("quiz-restart");
+  if (restart) restart.onclick = () => { quizType = null; render(); };
+
+  document.querySelectorAll(".quiz-opt").forEach(b => {
+    b.onclick = () => {
+      if (qSelected !== null) return;
+      const i = parseInt(b.dataset.oi);
+      qSelected = i;
+      const q = questions[qIdx];
+      const correct = q.options[i].correct;
+      if (correct) qScore++;
+
+      // Update familiarity
+      const delta = correct ? 1 : -1;
+      const newFam = Math.max(0, Math.min(5, (q.word.familiarity || 0) + delta));
+      q.word.familiarity = newFam;
+      const wi = words.findIndex(w => w.word === q.word.word);
+      if (wi >= 0) words[wi].familiarity = newFam;
+      apiPost({ action: "update_familiarity", wordName: q.word.word, familiarity: newFam });
+
+      render(); // show colors
+      setTimeout(() => {
+        if (qIdx + 1 >= questions.length) { qFinished = true; }
+        else { qIdx++; }
+        qSelected = null;
+        render();
+      }, 1000);
+    };
+  });
+}
+
+// ── Word List ────────────────────────────────────────────────
+let listSearch = "";
+
+function renderList() {
+  const filtered = words.filter(w =>
+    w.word.toLowerCase().includes(listSearch.toLowerCase()) || (w.zhTW || "").includes(listSearch)
+  );
+  const sorted = [...filtered].sort((a, b) => (a.familiarity || 0) - (b.familiarity || 0));
+
+  let items = sorted.map((w, i) => {
+    const dots = [0,1,2,3,4].map(j =>
+      `<div class="fam-dot" style="background:${j < (w.familiarity||0) ? famColor(w.familiarity) : '#ddd'}"></div>`
+    ).join("");
+    const tags = (w.synonyms || []).slice(0, 4).map(s => `<span class="tag">${s}</span>`).join("");
+    return `<div class="word-item">
+      <div class="top">
+        <div><span class="name">${w.word}</span><span class="ph">${w.phonetic||''}</span></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="fam-dots">${dots}</div>
+          <button class="del-btn" data-word="${w.word}">×</button>
+        </div>
+      </div>
+      <div class="zh">${w.zhTW}</div>
+      ${tags ? `<div class="tags">${tags}</div>` : ''}
+    </div>`;
+  }).join("");
+
+  if (sorted.length === 0) {
+    items = `<div class="empty">${listSearch ? '找不到符合的單字' : '還沒有單字，點下方 + 新增吧！'}</div>`;
+  }
+
+  return `<div class="content">
+    <h2 style="font-family:var(--serif);font-size:20px;margin-bottom:16px;">單字庫 <span style="font-size:14px;color:var(--ink3);font-weight:400;">(${words.length})</span></h2>
+    <input class="search-input" id="search" placeholder="🔍 搜尋單字或中文..." value="${listSearch}">
+    ${items}
+  </div>`;
+}
+
+function bindList() {
+  const s = document.getElementById("search");
+  if (s) s.oninput = () => { listSearch = s.value; render(); requestAnimationFrame(() => { const el = document.getElementById("search"); if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); } }); };
+
+  document.querySelectorAll(".del-btn").forEach(b => {
+    b.onclick = async () => {
+      const w = b.dataset.word;
+      if (!confirm(`確定要刪除 "${w}"？`)) return;
+      words = words.filter(x => x.word !== w);
+      apiPost({ action: "delete", wordName: w });
+      toast(`🗑 已刪除 ${w}`);
+      render();
+    };
+  });
+}
+
+// ── Add ──────────────────────────────────────────────────────
+let addMode = "json";
+
+function renderAdd() {
+  const jsonTab = addMode === "json"
+    ? `<div>
+        <p class="json-hint">貼上從 <code>/save-vocab</code> shortcut 產生的 JSON。支援單一物件或陣列。</p>
+        <textarea class="json-area" id="json-input" placeholder='[{\n  "word": "supervise",\n  "phonetic": "/ˈsuːpərvaɪz/",\n  "zhTW": "監督",\n  "definition": "To watch over...",\n  "synonyms": ["oversee", "manage"],\n  "example": "She supervises the team.",\n  "forms": {"verb":"supervise","noun":"supervision"}\n}]'></textarea>
+        <button class="submit-btn" id="json-submit">匯入</button>
+      </div>`
+    : `<div>
+        ${["word|單字 *|e.g. supervise", "zhTW|中文翻譯|e.g. 監督", "definition|英文定義|e.g. To watch over...", "synonyms|同義詞 (逗號分隔)|e.g. oversee, manage", "example|例句|e.g. She supervises the team."].map(f => {
+          const [key, label, ph] = f.split("|");
+          return `<div class="field"><label>${label}</label><input id="m-${key}" placeholder="${ph}"></div>`;
+        }).join("")}
+        <button class="submit-btn" id="manual-submit">新增</button>
+      </div>`;
+
+  return `<div class="content">
+    <div class="add-header">
+      <h2 style="font-family:var(--serif);">新增單字</h2>
+      <button class="close-btn" id="add-close">×</button>
+    </div>
+    <div class="mode-tabs">
+      <button class="mode-tab ${addMode==='json'?'active':'inactive'}" data-mode="json">JSON 貼上</button>
+      <button class="mode-tab ${addMode==='manual'?'active':'inactive'}" data-mode="manual">手動輸入</button>
+    </div>
+    ${jsonTab}
+    <div class="tip-box">
+      💡 <strong>Shortcut 工作流程</strong><br><br>
+      ① 用 <code>/vocab</code> 查單字<br>
+      ② 結束後呼叫 <code>/save-vocab</code><br>
+      ③ Claude 會自動整理成 JSON<br>
+      ④ 複製 JSON 貼到這裡匯入
+    </div>
+  </div>`;
+}
+
+function bindAdd() {
+  document.querySelectorAll(".mode-tab").forEach(b => {
+    b.onclick = () => { addMode = b.dataset.mode; render(); };
+  });
+  const close = document.getElementById("add-close");
+  if (close) close.onclick = () => { currentTab = "cards"; render(); };
+
+  const jsonBtn = document.getElementById("json-submit");
+  if (jsonBtn) {
+    jsonBtn.onclick = async () => {
+      const raw = document.getElementById("json-input").value.trim();
+      try {
+        const parsed = JSON.parse(raw);
+        const arr = Array.isArray(parsed) ? parsed : [parsed];
+        const newWords = arr.map(w => ({
+          word: w.word || "", phonetic: w.phonetic || "", zhTW: w.zhTW || w.zh || "",
+          definition: w.definition || "", synonyms: w.synonyms || [], example: w.example || "",
+          forms: w.forms || {}, addedAt: new Date().toISOString(), familiarity: 0, lastReviewed: "",
+        }));
+        // Merge locally
+        newWords.forEach(nw => {
+          const idx = words.findIndex(w => w.word.toLowerCase() === nw.word.toLowerCase());
+          if (idx >= 0) words[idx] = { ...words[idx], ...nw };
+          else words.push(nw);
+        });
+        // Sync to sheet
+        await apiPost({ action: "bulk_upsert", words: newWords });
+        toast(`✅ 匯入了 ${newWords.length} 個單字！`);
+        deck = []; // reset deck
+        render();
+      } catch {
+        toast("❌ JSON 格式不正確");
+      }
+    };
+  }
+
+  const manualBtn = document.getElementById("manual-submit");
+  if (manualBtn) {
+    manualBtn.onclick = async () => {
+      const word = document.getElementById("m-word").value.trim();
+      if (!word) { toast("❌ 請輸入單字"); return; }
+      const nw = {
+        word,
+        phonetic: "",
+        zhTW: document.getElementById("m-zhTW").value.trim(),
+        definition: document.getElementById("m-definition").value.trim(),
+        synonyms: document.getElementById("m-synonyms").value.split(",").map(s => s.trim()).filter(Boolean),
+        example: document.getElementById("m-example").value.trim(),
+        forms: {},
+        addedAt: new Date().toISOString(),
+        familiarity: 0,
+        lastReviewed: "",
+      };
+      const idx = words.findIndex(w => w.word.toLowerCase() === nw.word.toLowerCase());
+      if (idx >= 0) words[idx] = { ...words[idx], ...nw };
+      else words.push(nw);
+      await apiPost({ action: "upsert", word: nw });
+      toast(`✅ 已新增 "${word}"`);
+      deck = [];
+      render();
+    };
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────
+(async function init() {
+  if (API_URL) {
+    const data = await apiGet();
+    if (data !== null) {
+      words = data;
+    } else {
+      toast("⚠️ 無法連線到 Google Sheet，使用離線模式");
+    }
+  }
+  render();
+})();
+</script>
+</body>
+</html>
