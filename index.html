@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -28,14 +28,12 @@
   button { font-family: var(--sans); cursor: pointer; border: none; outline: none; }
   input, textarea { font-family: var(--sans); outline: none; }
 
-  /* ── Layout ── */
   .app { max-width: 480px; margin: 0 auto; padding-bottom: 90px; }
   .header { padding: 20px 16px 8px; display: flex; align-items: center; gap: 10px; }
   .header h1 { font-family: var(--serif); font-size: 22px; letter-spacing: -0.5px; }
   .header .sub { font-size: 11px; color: var(--ink3); }
   .content { padding: 12px 16px; }
 
-  /* ── Setup Banner ── */
   .setup-banner {
     background: var(--accent); border-radius: var(--radius); padding: 16px;
     margin: 12px 16px; display: flex; flex-direction: column; gap: 8px;
@@ -50,7 +48,6 @@
     font-size: 14px; font-weight: 600;
   }
 
-  /* ── Bottom Nav ── */
   .nav {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
     background: rgba(255,255,255,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -65,8 +62,6 @@
   .nav-btn.active { color: var(--ink); }
   .nav-btn svg { width: 20px; height: 20px; }
 
-  /* ── Flashcard ── */
-  .card-container { perspective: 1000px; margin-bottom: 16px; }
   .card {
     border-radius: 20px; padding: 40px 24px; min-height: 340px;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -104,20 +99,16 @@
   .dot { width: 6px; height: 6px; border-radius: 50%; background: #ddd; transition: all .2s; }
   .dot.active { width: 18px; border-radius: 3px; background: var(--ink); }
 
-  /* ── Quiz ── */
   .quiz-start { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; }
   .quiz-start h2 { font-family: var(--serif); font-size: 24px; margin-bottom: 8px; }
   .quiz-start .sub { color: var(--ink3); font-size: 14px; margin-bottom: 28px; }
   .quiz-type-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; }
-  .quiz-type-btn {
-    padding: 16px; border-radius: var(--radius); font-size: 15px; font-weight: 500;
-  }
+  .quiz-type-btn { padding: 16px; border-radius: var(--radius); font-size: 15px; font-weight: 500; }
   .quiz-type-btn.primary { background: var(--ink); color: var(--bg); }
   .quiz-type-btn.secondary { background: var(--card); color: var(--ink); border: 2px solid var(--ink); }
 
   .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 30px; }
   .progress-fill { height: 4px; background: var(--ink); border-radius: 2px; transition: width .3s; }
-
   .quiz-question { text-align: center; margin-bottom: 30px; }
   .quiz-question .label { font-size: 13px; color: var(--ink3); margin-bottom: 8px; }
   .quiz-question .prompt { font-family: var(--serif); font-size: 32px; }
@@ -135,7 +126,6 @@
   .quiz-result .emoji { font-size: 64px; margin-bottom: 12px; }
   .quiz-result .score { font-family: var(--serif); font-size: 32px; margin-bottom: 4px; }
 
-  /* ── Word List ── */
   .search-input {
     width: 100%; padding: 12px; border-radius: var(--radius); border: 2px solid var(--border);
     font-size: 14px; margin-bottom: 16px; background: rgba(250,248,244,.8);
@@ -157,14 +147,11 @@
   .fam-dot { width: 6px; height: 6px; border-radius: 50%; background: #ddd; }
   .del-btn { background: none; font-size: 16px; color: var(--ink5); padding: 0 4px; }
 
-  /* ── Add ── */
   .add-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .add-header h2 { font-family: var(--serif); font-size: 20px; }
   .close-btn { background: none; font-size: 24px; color: var(--ink2); }
   .mode-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-  .mode-tab {
-    flex: 1; padding: 8px; border-radius: var(--radius-sm); font-size: 13px; transition: all .2s;
-  }
+  .mode-tab { flex: 1; padding: 8px; border-radius: var(--radius-sm); font-size: 13px; transition: all .2s; }
   .mode-tab.active { background: var(--ink); color: var(--bg); }
   .mode-tab.inactive { background: var(--bg2); color: var(--ink); }
   .json-hint { font-size: 12px; color: var(--ink3); margin-bottom: 12px; line-height: 1.6; }
@@ -188,47 +175,42 @@
     margin-top: 24px; padding: 16px; background: var(--bg3); border-radius: var(--radius);
     font-size: 13px; color: var(--ink2); line-height: 1.7;
   }
-
-  /* ── Sync indicator ── */
-  .sync { font-size: 11px; color: var(--ink4); padding: 4px 0; text-align: center; }
-  .sync.error { color: var(--red); }
-  .sync.ok { color: var(--green); }
-
-  /* ── Loading / Empty ── */
   .empty { text-align: center; color: var(--ink3); padding: 60px 20px; }
   .empty .icon { font-size: 40px; margin-bottom: 8px; }
   .loading { display: flex; align-items: center; justify-content: center; height: 80vh; color: var(--ink3); }
-
-  /* ── Toast ── */
   .toast {
     position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
     background: var(--ink); color: var(--bg); padding: 10px 20px; border-radius: 30px;
-    font-size: 13px; z-index: 200; opacity: 0; transition: opacity .3s;
-    pointer-events: none;
+    font-size: 13px; z-index: 200; opacity: 0; transition: opacity .3s; pointer-events: none;
   }
   .toast.show { opacity: 1; }
+
+  .settings-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+  }
+  .settings-row label { font-size: 14px; }
+  .settings-row .val { font-size: 12px; color: var(--ink3); font-family: var(--mono);
+    max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .danger-btn {
+    padding: 10px 20px; border-radius: var(--radius-sm); background: #fff;
+    border: 2px solid var(--red); color: var(--red); font-size: 13px; font-weight: 600;
+  }
 </style>
 </head>
 <body>
 
 <div id="toast" class="toast"></div>
-
-<div class="app" id="app">
-  <div class="loading">載入中...</div>
-</div>
-
-<nav class="nav">
-  <div class="nav-inner" id="nav"></div>
-</nav>
+<div class="app" id="app"><div class="loading">Loading...</div></div>
+<nav class="nav"><div class="nav-inner" id="nav"></div></nav>
 
 <script>
 // ============================================================
-// Vocab Lab — Frontend
+// Vocab Lab — Frontend (English UI)
 // ============================================================
 
-// ── Config ───────────────────────────────────────────────────
 const STORAGE_API_URL_KEY = "vocablab_api_url";
-let API_URL = localStorage.getItem(STORAGE_API_URL_KEY) || "";
+let API_URL = "https://script.google.com/macros/s/AKfycbyvTe8HoIk3VmPaLLogozeMIMXWU5DwJ6THoV0JNl_vxoYRPQaOcplNV8tGKyl4IJ-HAw/exec";
 let words = [];
 let currentTab = "cards";
 
@@ -244,18 +226,45 @@ function toast(msg, duration = 2000) {
 async function apiGet() {
   if (!API_URL) return null;
   try {
-    const r = await fetch(API_URL);
+    const r = await fetch(API_URL, { redirect: "follow" });
     const d = await r.json();
     return d.success ? d.words : null;
-  } catch (e) { console.error("GET fail:", e); return null; }
+  } catch (e) {
+    // GAS redirects can fail with fetch — fallback to JSONP-style via script tag
+    console.warn("fetch GET failed, trying script fallback:", e);
+    return new Promise((resolve) => {
+      const cb = "_vocabcb_" + Date.now();
+      window[cb] = (d) => { resolve(d.success ? d.words : null); delete window[cb]; };
+      // Use an iframe approach instead
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = API_URL;
+      document.body.appendChild(iframe);
+      iframe.onload = () => {
+        try {
+          // Try reading from iframe (won't work cross-origin, but GAS should redirect properly)
+          const text = iframe.contentDocument.body.innerText;
+          const d = JSON.parse(text);
+          resolve(d.success ? d.words : null);
+        } catch {
+          resolve(null);
+        } finally {
+          document.body.removeChild(iframe);
+        }
+      };
+      iframe.onerror = () => { resolve(null); document.body.removeChild(iframe); };
+      setTimeout(() => resolve(null), 10000);
+    });
+  }
 }
 
 async function apiPost(body) {
   if (!API_URL) return null;
   try {
     const r = await fetch(API_URL, {
-      method: "POST", headers: { "Content-Type": "text/plain" },
+      method: "POST",
       body: JSON.stringify(body),
+      redirect: "follow",
     });
     return await r.json();
   } catch (e) { console.error("POST fail:", e); return null; }
@@ -270,16 +279,14 @@ function shuffle(arr) {
   }
   return a;
 }
-
 function famColor(f) {
   return f >= 4 ? "var(--green)" : f >= 2 ? "var(--orange)" : "var(--red)";
 }
 
-// ── Render Engine ────────────────────────────────────────────
+// ── Render ───────────────────────────────────────────────────
 function render() {
   renderNav();
   const app = document.getElementById("app");
-
   if (!API_URL) { app.innerHTML = renderSetup(); bindSetup(); return; }
 
   let html = renderHeader();
@@ -287,21 +294,24 @@ function render() {
   else if (currentTab === "quiz") html += renderQuiz();
   else if (currentTab === "list") html += renderList();
   else if (currentTab === "add") html += renderAdd();
+  else if (currentTab === "settings") html += renderSettings();
   app.innerHTML = html;
 
   if (currentTab === "cards") bindCards();
   else if (currentTab === "quiz") bindQuiz();
   else if (currentTab === "list") bindList();
   else if (currentTab === "add") bindAdd();
+  else if (currentTab === "settings") bindSettings();
 }
 
 // ── Nav ──────────────────────────────────────────────────────
 function renderNav() {
   const tabs = [
-    { key: "cards", label: "卡片", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg>` },
-    { key: "quiz", label: "測驗", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 115 2c0 1.5-2 2-2 3m0 3h.01"/></svg>` },
-    { key: "list", label: "單字庫", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>` },
-    { key: "add", label: "新增", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>` },
+    { key: "cards", label: "Cards", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg>` },
+    { key: "quiz", label: "Quiz", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 115 2c0 1.5-2 2-2 3m0 3h.01"/></svg>` },
+    { key: "list", label: "Words", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>` },
+    { key: "add", label: "Add", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>` },
+    { key: "settings", label: "Settings", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>` },
   ];
   document.getElementById("nav").innerHTML = tabs.map(t =>
     `<button class="nav-btn ${currentTab === t.key ? 'active' : ''}" data-tab="${t.key}">${t.icon}<span>${t.label}</span></button>`
@@ -317,19 +327,19 @@ function renderSetup() {
     <div style="padding:60px 24px;text-align:center;">
       <div style="font-size:48px;margin-bottom:12px;">📖</div>
       <h1 style="font-family:var(--serif);font-size:28px;margin-bottom:4px;">Vocab Lab</h1>
-      <p style="color:var(--ink3);margin-bottom:32px;">連結你的 Google Sheet 開始使用</p>
+      <p style="color:var(--ink3);margin-bottom:32px;">Connect your Google Sheet to get started</p>
       <div class="setup-banner">
-        <h3>🔗 貼上 Apps Script URL</h3>
+        <h3>🔗 Paste your Apps Script URL</h3>
         <input id="api-input" type="url" placeholder="https://script.google.com/macros/s/xxxxx/exec">
-        <button id="api-save">連線</button>
+        <button id="api-save">Connect</button>
       </div>
       <div class="tip-box" style="margin:24px 0;text-align:left;">
-        <strong>💡 還沒設定？步驟如下：</strong><br><br>
-        1️⃣ 建立 Google Sheet<br>
+        <strong>💡 Haven't set it up yet?</strong><br><br>
+        1️⃣ Create a Google Sheet<br>
         2️⃣ Extensions → Apps Script<br>
-        3️⃣ 貼上 google-apps-script.js 的 code<br>
+        3️⃣ Paste the Apps Script code<br>
         4️⃣ Deploy → New deployment → Web app<br>
-        5️⃣ 複製 URL 貼到上面
+        5️⃣ Copy the URL and paste it above
       </div>
     </div>`;
 }
@@ -339,18 +349,18 @@ function bindSetup() {
   btn.onclick = async () => {
     const url = document.getElementById("api-input").value.trim();
     if (!url.startsWith("https://script.google.com")) {
-      toast("❌ 請貼上有效的 Apps Script URL"); return;
+      toast("❌ Please enter a valid Apps Script URL"); return;
     }
     API_URL = url;
     localStorage.setItem(STORAGE_API_URL_KEY, url);
-    toast("⏳ 連線中...");
+    toast("⏳ Connecting...");
     const data = await apiGet();
     if (data !== null) {
       words = data;
-      toast("✅ 連線成功！");
+      toast("✅ Connected!");
       render();
     } else {
-      toast("❌ 連線失敗，請確認 URL 和權限");
+      toast("❌ Connection failed. Check URL & permissions.");
       API_URL = "";
       localStorage.removeItem(STORAGE_API_URL_KEY);
     }
@@ -365,7 +375,7 @@ function renderHeader() {
       <span style="font-size:28px;">📖</span>
       <div>
         <h1>Vocab Lab</h1>
-        <div class="sub">${words.length} 個單字 · ${mastered} 已熟悉</div>
+        <div class="sub">${words.length} words · ${mastered} mastered</div>
       </div>
     </div>`;
 }
@@ -380,7 +390,7 @@ function initDeck() {
 }
 
 function renderCards() {
-  if (words.length === 0) return `<div class="empty"><div class="icon">📚</div><div>還沒有單字，去「新增」加幾個吧！</div></div>`;
+  if (words.length === 0) return `<div class="empty"><div class="icon">📚</div><div>No words yet. Tap "Add" to get started!</div></div>`;
   if (deck.length === 0) initDeck();
   const c = deck[cardIdx];
   if (!c) { initDeck(); return renderCards(); }
@@ -388,13 +398,13 @@ function renderCards() {
   if (!flipped) {
     return `<div class="content">
       <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
-        <h2 style="font-family:var(--serif);font-size:20px;">複習卡片</h2>
+        <h2 style="font-family:var(--serif);font-size:20px;">Flashcards</h2>
         <span style="font-size:13px;color:var(--ink3);">${cardIdx + 1} / ${deck.length}</span>
       </div>
       <div class="card front" id="flashcard">
         <div class="word-big">${c.word}</div>
         <div class="phonetic">${c.phonetic || ''}</div>
-        <div class="hint">點擊翻面 →</div>
+        <div class="hint">Tap to flip →</div>
       </div>
       ${renderDots()}
     </div>`;
@@ -405,7 +415,7 @@ function renderCards() {
 
   return `<div class="content">
     <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
-      <h2 style="font-family:var(--serif);font-size:20px;color:var(--ink);">複習卡片</h2>
+      <h2 style="font-family:var(--serif);font-size:20px;">Flashcards</h2>
       <span style="font-size:13px;color:var(--ink3);">${cardIdx + 1} / ${deck.length}</span>
     </div>
     <div class="card back" id="flashcard">
@@ -418,9 +428,9 @@ function renderCards() {
       ${forms ? `<div class="forms">${forms}</div>` : ''}
     </div>
     <div class="rate-btns">
-      <button class="rate-btn r" data-delta="-1">不熟 😵</button>
-      <button class="rate-btn o" data-delta="0">普通 🤔</button>
-      <button class="rate-btn g" data-delta="1">記得 ✅</button>
+      <button class="rate-btn r" data-delta="-1">Forgot 😵</button>
+      <button class="rate-btn o" data-delta="0">So-so 🤔</button>
+      <button class="rate-btn g" data-delta="1">Got it ✅</button>
     </div>
     ${renderDots()}
   </div>`;
@@ -444,10 +454,8 @@ function bindCards() {
       const newFam = Math.max(0, Math.min(5, (c.familiarity || 0) + delta));
       c.familiarity = newFam;
       c.lastReviewed = new Date().toISOString();
-      // Update local
       const wi = words.findIndex(w => w.word === c.word);
       if (wi >= 0) { words[wi].familiarity = newFam; words[wi].lastReviewed = c.lastReviewed; }
-      // Update remote (fire and forget)
       apiPost({ action: "update_familiarity", wordName: c.word, familiarity: newFam });
       flipped = false;
       cardIdx = (cardIdx + 1) % deck.length;
@@ -455,7 +463,6 @@ function bindCards() {
     };
   });
 
-  // Swipe support
   let touchX = null;
   if (fc) {
     fc.addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, { passive: true });
@@ -478,11 +485,11 @@ function renderQuiz() {
   if (!quizType) {
     const enough = words.length >= 4;
     return `<div class="content"><div class="quiz-start">
-      <h2>測驗模式</h2>
-      <div class="sub">${enough ? `共 ${words.length} 個單字，隨機出 ${Math.min(10, words.length)} 題` : '至少需要 4 個單字才能開始測驗'}</div>
+      <h2>Quiz Mode</h2>
+      <div class="sub">${enough ? `${words.length} words available · ${Math.min(10, words.length)} questions` : 'Need at least 4 words to start a quiz'}</div>
       ${enough ? `<div class="quiz-type-btns">
-        <button class="quiz-type-btn primary" data-type="en2zh">🇬🇧 → 🇹🇼 英翻中</button>
-        <button class="quiz-type-btn secondary" data-type="zh2en">🇹🇼 → 🇬🇧 中翻英</button>
+        <button class="quiz-type-btn primary" data-type="en2zh">🇬🇧 → 🇹🇼 English to Chinese</button>
+        <button class="quiz-type-btn secondary" data-type="zh2en">🇹🇼 → 🇬🇧 Chinese to English</button>
       </div>` : ''}
     </div></div>`;
   }
@@ -490,18 +497,18 @@ function renderQuiz() {
   if (qFinished) {
     const pct = Math.round((qScore / questions.length) * 100);
     const emoji = pct >= 80 ? "🎉" : pct >= 50 ? "💪" : "📖";
-    const msg = pct >= 80 ? "太厲害了！" : pct >= 50 ? "還不錯，繼續加油！" : "多複習幾次會更好的！";
+    const msg = pct >= 80 ? "Amazing!" : pct >= 50 ? "Not bad, keep going!" : "Review a few more times!";
     return `<div class="content"><div class="quiz-result">
       <div class="emoji">${emoji}</div>
       <div class="score">${qScore} / ${questions.length}</div>
       <div class="sub">${msg}</div>
-      <button class="quiz-type-btn primary" id="quiz-restart" style="margin-top:20px;padding:14px 40px;">再來一次</button>
+      <button class="quiz-type-btn primary" id="quiz-restart" style="margin-top:20px;padding:14px 40px;">Try Again</button>
     </div></div>`;
   }
 
   const q = questions[qIdx];
   const prompt = q.type === "en2zh" ? q.word.word : q.word.zhTW;
-  const label = q.type === "en2zh" ? "這個字的中文是？" : "這個中文對應的英文是？";
+  const label = q.type === "en2zh" ? "What's the Chinese meaning?" : "What's the English word?";
 
   let optsHtml = q.options.map((o, i) => {
     let cls = q.type === "zh2en" ? "quiz-opt en" : "quiz-opt";
@@ -514,7 +521,7 @@ function renderQuiz() {
 
   return `<div class="content">
     <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
-      <button id="quiz-back" style="background:none;font-size:14px;color:var(--ink3);">← 返回</button>
+      <button id="quiz-back" style="background:none;font-size:14px;color:var(--ink3);">← Back</button>
       <span style="font-size:13px;color:var(--ink3);">${qIdx + 1} / ${questions.length}</span>
     </div>
     <div class="progress-bar"><div class="progress-fill" style="width:${(qIdx / questions.length) * 100}%"></div></div>
@@ -558,16 +565,13 @@ function bindQuiz() {
       const q = questions[qIdx];
       const correct = q.options[i].correct;
       if (correct) qScore++;
-
-      // Update familiarity
       const delta = correct ? 1 : -1;
       const newFam = Math.max(0, Math.min(5, (q.word.familiarity || 0) + delta));
       q.word.familiarity = newFam;
       const wi = words.findIndex(w => w.word === q.word.word);
       if (wi >= 0) words[wi].familiarity = newFam;
       apiPost({ action: "update_familiarity", wordName: q.word.word, familiarity: newFam });
-
-      render(); // show colors
+      render();
       setTimeout(() => {
         if (qIdx + 1 >= questions.length) { qFinished = true; }
         else { qIdx++; }
@@ -587,7 +591,7 @@ function renderList() {
   );
   const sorted = [...filtered].sort((a, b) => (a.familiarity || 0) - (b.familiarity || 0));
 
-  let items = sorted.map((w, i) => {
+  let items = sorted.map(w => {
     const dots = [0,1,2,3,4].map(j =>
       `<div class="fam-dot" style="background:${j < (w.familiarity||0) ? famColor(w.familiarity) : '#ddd'}"></div>`
     ).join("");
@@ -606,27 +610,33 @@ function renderList() {
   }).join("");
 
   if (sorted.length === 0) {
-    items = `<div class="empty">${listSearch ? '找不到符合的單字' : '還沒有單字，點下方 + 新增吧！'}</div>`;
+    items = `<div class="empty">${listSearch ? 'No matching words found' : 'No words yet. Tap "Add" to get started!'}</div>`;
   }
 
   return `<div class="content">
-    <h2 style="font-family:var(--serif);font-size:20px;margin-bottom:16px;">單字庫 <span style="font-size:14px;color:var(--ink3);font-weight:400;">(${words.length})</span></h2>
-    <input class="search-input" id="search" placeholder="🔍 搜尋單字或中文..." value="${listSearch}">
+    <h2 style="font-family:var(--serif);font-size:20px;margin-bottom:16px;">Word Bank <span style="font-size:14px;color:var(--ink3);font-weight:400;">(${words.length})</span></h2>
+    <input class="search-input" id="search" placeholder="🔍 Search words..." value="${listSearch}">
     ${items}
   </div>`;
 }
 
 function bindList() {
   const s = document.getElementById("search");
-  if (s) s.oninput = () => { listSearch = s.value; render(); requestAnimationFrame(() => { const el = document.getElementById("search"); if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); } }); };
-
+  if (s) s.oninput = () => {
+    listSearch = s.value;
+    render();
+    requestAnimationFrame(() => {
+      const el = document.getElementById("search");
+      if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+    });
+  };
   document.querySelectorAll(".del-btn").forEach(b => {
     b.onclick = async () => {
       const w = b.dataset.word;
-      if (!confirm(`確定要刪除 "${w}"？`)) return;
+      if (!confirm(`Delete "${w}"?`)) return;
       words = words.filter(x => x.word !== w);
       apiPost({ action: "delete", wordName: w });
-      toast(`🗑 已刪除 ${w}`);
+      toast(`🗑 Deleted "${w}"`);
       render();
     };
   });
@@ -636,36 +646,41 @@ function bindList() {
 let addMode = "json";
 
 function renderAdd() {
-  const jsonTab = addMode === "json"
+  const content = addMode === "json"
     ? `<div>
-        <p class="json-hint">貼上從 <code>/save-vocab</code> shortcut 產生的 JSON。支援單一物件或陣列。</p>
+        <p class="json-hint">Paste the JSON output from your <code>/save-vocab</code> shortcut. Accepts a single object or an array.</p>
         <textarea class="json-area" id="json-input" placeholder='[{\n  "word": "supervise",\n  "phonetic": "/ˈsuːpərvaɪz/",\n  "zhTW": "監督",\n  "definition": "To watch over...",\n  "synonyms": ["oversee", "manage"],\n  "example": "She supervises the team.",\n  "forms": {"verb":"supervise","noun":"supervision"}\n}]'></textarea>
-        <button class="submit-btn" id="json-submit">匯入</button>
+        <button class="submit-btn" id="json-submit">Import</button>
       </div>`
     : `<div>
-        ${["word|單字 *|e.g. supervise", "zhTW|中文翻譯|e.g. 監督", "definition|英文定義|e.g. To watch over...", "synonyms|同義詞 (逗號分隔)|e.g. oversee, manage", "example|例句|e.g. She supervises the team."].map(f => {
-          const [key, label, ph] = f.split("|");
-          return `<div class="field"><label>${label}</label><input id="m-${key}" placeholder="${ph}"></div>`;
-        }).join("")}
-        <button class="submit-btn" id="manual-submit">新增</button>
+        ${[
+          ["word", "Word *", "e.g. supervise"],
+          ["zhTW", "Chinese Translation", "e.g. 監督"],
+          ["definition", "Definition", "e.g. To watch over and direct..."],
+          ["synonyms", "Synonyms (comma-separated)", "e.g. oversee, manage, direct"],
+          ["example", "Example Sentence", "e.g. She supervises the team."],
+        ].map(([key, label, ph]) =>
+          `<div class="field"><label>${label}</label><input id="m-${key}" placeholder="${ph}"></div>`
+        ).join("")}
+        <button class="submit-btn" id="manual-submit">Add Word</button>
       </div>`;
 
   return `<div class="content">
     <div class="add-header">
-      <h2 style="font-family:var(--serif);">新增單字</h2>
+      <h2 style="font-family:var(--serif);">Add Words</h2>
       <button class="close-btn" id="add-close">×</button>
     </div>
     <div class="mode-tabs">
-      <button class="mode-tab ${addMode==='json'?'active':'inactive'}" data-mode="json">JSON 貼上</button>
-      <button class="mode-tab ${addMode==='manual'?'active':'inactive'}" data-mode="manual">手動輸入</button>
+      <button class="mode-tab ${addMode==='json'?'active':'inactive'}" data-mode="json">Paste JSON</button>
+      <button class="mode-tab ${addMode==='manual'?'active':'inactive'}" data-mode="manual">Manual Entry</button>
     </div>
-    ${jsonTab}
+    ${content}
     <div class="tip-box">
-      💡 <strong>Shortcut 工作流程</strong><br><br>
-      ① 用 <code>/vocab</code> 查單字<br>
-      ② 結束後呼叫 <code>/save-vocab</code><br>
-      ③ Claude 會自動整理成 JSON<br>
-      ④ 複製 JSON 貼到這裡匯入
+      💡 <strong>Recommended Workflow</strong><br><br>
+      ① Use <code>/vocab</code> to look up words<br>
+      ② When done, call <code>/save-vocab</code><br>
+      ③ Claude outputs structured JSON<br>
+      ④ Copy & paste the JSON here to import
     </div>
   </div>`;
 }
@@ -689,19 +704,18 @@ function bindAdd() {
           definition: w.definition || "", synonyms: w.synonyms || [], example: w.example || "",
           forms: w.forms || {}, addedAt: new Date().toISOString(), familiarity: 0, lastReviewed: "",
         }));
-        // Merge locally
         newWords.forEach(nw => {
           const idx = words.findIndex(w => w.word.toLowerCase() === nw.word.toLowerCase());
           if (idx >= 0) words[idx] = { ...words[idx], ...nw };
           else words.push(nw);
         });
-        // Sync to sheet
+        toast(`⏳ Syncing ${newWords.length} words...`);
         await apiPost({ action: "bulk_upsert", words: newWords });
-        toast(`✅ 匯入了 ${newWords.length} 個單字！`);
-        deck = []; // reset deck
+        toast(`✅ Imported ${newWords.length} word${newWords.length > 1 ? 's' : ''}!`);
+        deck = [];
         render();
       } catch {
-        toast("❌ JSON 格式不正確");
+        toast("❌ Invalid JSON format");
       }
     };
   }
@@ -710,39 +724,77 @@ function bindAdd() {
   if (manualBtn) {
     manualBtn.onclick = async () => {
       const word = document.getElementById("m-word").value.trim();
-      if (!word) { toast("❌ 請輸入單字"); return; }
+      if (!word) { toast("❌ Please enter a word"); return; }
       const nw = {
-        word,
-        phonetic: "",
+        word, phonetic: "",
         zhTW: document.getElementById("m-zhTW").value.trim(),
         definition: document.getElementById("m-definition").value.trim(),
         synonyms: document.getElementById("m-synonyms").value.split(",").map(s => s.trim()).filter(Boolean),
         example: document.getElementById("m-example").value.trim(),
-        forms: {},
-        addedAt: new Date().toISOString(),
-        familiarity: 0,
-        lastReviewed: "",
+        forms: {}, addedAt: new Date().toISOString(), familiarity: 0, lastReviewed: "",
       };
       const idx = words.findIndex(w => w.word.toLowerCase() === nw.word.toLowerCase());
       if (idx >= 0) words[idx] = { ...words[idx], ...nw };
       else words.push(nw);
       await apiPost({ action: "upsert", word: nw });
-      toast(`✅ 已新增 "${word}"`);
+      toast(`✅ Added "${word}"`);
       deck = [];
       render();
     };
   }
 }
 
+// ── Settings ─────────────────────────────────────────────────
+function renderSettings() {
+  const truncUrl = API_URL.length > 45 ? API_URL.slice(0, 45) + "..." : API_URL;
+  return `<div class="content">
+    <h2 style="font-family:var(--serif);font-size:20px;margin-bottom:20px;">Settings</h2>
+    <div class="settings-row">
+      <label>Google Sheet API</label>
+      <span class="val" title="${API_URL}">${truncUrl}</span>
+    </div>
+    <div class="settings-row">
+      <label>Total Words</label>
+      <span class="val">${words.length}</span>
+    </div>
+    <div class="settings-row">
+      <label>Mastered (≥4)</label>
+      <span class="val">${words.filter(w => (w.familiarity||0) >= 4).length}</span>
+    </div>
+    <div style="margin-top:24px;display:flex;flex-direction:column;gap:10px;">
+      <button class="submit-btn" id="refresh-btn">🔄 Refresh from Sheet</button>
+      <button class="submit-btn" id="reset-deck-btn" style="background:var(--orange);">🔀 Reshuffle Deck</button>
+      <button class="danger-btn" id="disconnect-btn">Disconnect Sheet</button>
+    </div>
+  </div>`;
+}
+
+function bindSettings() {
+  document.getElementById("refresh-btn").onclick = async () => {
+    toast("⏳ Refreshing...");
+    const data = await apiGet();
+    if (data !== null) { words = data; deck = []; toast(`✅ Loaded ${words.length} words`); render(); }
+    else toast("❌ Failed to refresh");
+  };
+  document.getElementById("reset-deck-btn").onclick = () => {
+    deck = []; initDeck(); toast("🔀 Deck reshuffled!"); currentTab = "cards"; render();
+  };
+  document.getElementById("disconnect-btn").onclick = () => {
+    if (!confirm("Disconnect from Google Sheet? Your data stays in the sheet.")) return;
+    API_URL = "";
+    localStorage.removeItem(STORAGE_API_URL_KEY);
+    words = []; deck = [];
+    toast("Disconnected");
+    render();
+  };
+}
+
 // ── Init ─────────────────────────────────────────────────────
 (async function init() {
   if (API_URL) {
     const data = await apiGet();
-    if (data !== null) {
-      words = data;
-    } else {
-      toast("⚠️ 無法連線到 Google Sheet，使用離線模式");
-    }
+    if (data !== null) { words = data; }
+    else { toast("⚠️ Offline mode — couldn't reach Google Sheet"); }
   }
   render();
 })();
